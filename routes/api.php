@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Http\Request;
 
 /*
@@ -53,6 +52,8 @@ Route::get('/empresa/{empresa_id}', "EmpresaController@show");
 
 // create new company
 Route::post('/empresa', "EmpresaController@store");
+
+Route::post('/verify/empresa', "EmpresaController@verify");
 
 // update company existent
 Route::put('/empresa/{empresa_id}', "EmpresaController@update");

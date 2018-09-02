@@ -16,7 +16,6 @@ class EmpresaController extends Controller
 	 */
 	public function index()
 	{
-		// $user = User::paginate(5);
 		$Empresa = Empresa::all();
 
 		return EmpresaResource::collection($Empresa);
@@ -41,20 +40,20 @@ class EmpresaController extends Controller
 	public function store(Request $request)
 	{
 		$empresa = new Empresa;
-		$empresa->razao_social 	  = $request->input('razao_social');
-		$empresa->nome_fantasia  	  = $request->input('nome_fantasia');
-		$empresa->cnpj  	  = $request->input('cnpj');
-		$empresa->inscricao_estadual   	  = $request->input('inscricao_estadual');
-		$empresa->email     	  = $request->input('email');
-		$empresa->telefone1     	  = $request->input('telefone1');
-		$empresa->telefone2     	  = $request->input('telefone2');
-		$empresa->endereco     	  = $request->input('endereco');
-		$empresa->numero     	  = $request->input('numero');
-		$empresa->cidade     	  = $request->input('cidade');
-		$empresa->uf     	  = $request->input('uf');
-		$empresa->cep     	  = $request->input('cep');
-		$empresa->status     	  = $request->input('status');
-		$empresa->validade     	  = $request->input('validade');
+		$empresa->razao_social 	  	 = $request->input('razao_social');
+		$empresa->nome_fantasia  	 = $request->input('nome_fantasia');
+		$empresa->cnpj  	  		 = $request->input('cnpj');
+		$empresa->inscricao_estadual = $request->input('inscricao_estadual');
+		$empresa->email     	  	 = $request->input('email');
+		$empresa->telefone1     	 = $request->input('telefone1');
+		$empresa->telefone2     	 = $request->input('telefone2');
+		$empresa->endereco     	  	 = $request->input('endereco');
+		$empresa->numero     	  	 = $request->input('numero');
+		$empresa->cidade     	  	 = $request->input('cidade');
+		$empresa->uf     	  		 = $request->input('uf');
+		$empresa->cep     	  		 = $request->input('cep');
+		$empresa->status     	  	 = $request->input('status');
+		$empresa->validade     	  	 = $request->input('validade');
 		// $empresa->created_at     	  = $request->input('created_at');
 		// $empresa->update_at     	  = $request->input('update_at');        
 
@@ -84,9 +83,27 @@ class EmpresaController extends Controller
 	 * @param  int  $id
 	 * @return \Illuminate\Http\Response
 	 */
-	public function edit($empresa_id)
+	public function verify(Request $request)
 	{
-		//
+		// verificar Razão social
+        // Nome Fantasia 
+        // CNPJ
+		// Inscrição Estadual
+		$uso = [];
+		if (!Empresa::where('razao_social', '=', $request->input('razao_social'))->get()->isEmpty()) {
+			array_push($uso, "razao_social");
+		}
+		if(!Empresa::where('nome_fantasia', '=', $request->input('nome_fantasia'))->get()->isEmpty()) {
+			array_push($uso, "nome_fantasia");
+		}
+		if(!Empresa::where('cnpj', '=', $request->input('cnpj'))->get()->isEmpty()) {
+			array_push($uso, "cnpj");
+		}
+		if(!Empresa::where('inscricao_estadual', '=', $request->input('inscricao_estadual'))->get()->isEmpty()) {
+			array_push($uso, "inscricao_estadual");
+		}
+
+		return $uso;
 	}
 
 	/**
