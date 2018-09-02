@@ -44,7 +44,7 @@ class UserController extends Controller
 		$user->first_name 	  = $request->input('first_name');
 		$user->last_name  	  = $request->input('last_name');
 		$user->user_name  	  = $request->input('user_name');
-		$user->password   	  = md5($request->input('password'));
+		$user->password   	  = bcrypt($request->input('password'));
 		$user->master     	  = $request->input('master');
 		$user->status     	  = $request->input('status');
 		$user->remember_token = str_random(10);
@@ -93,7 +93,7 @@ class UserController extends Controller
 		$user->first_name 	  = $request->input('first_name');
 		$user->last_name  	  = $request->input('last_name');
 		$user->user_name  	  = $request->input('user_name');
-		$user->password   	  = md5($request->input('password'));
+		$user->password   	  = bcrypt($request->input('password'));
 		$user->master     	  = $request->input('master');
 		$user->status     	  = $request->input('status');
 		$user->remember_token = str_random(10);

@@ -17,6 +17,15 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('login', 'API\PassportController@login');
+Route::post('register', 'API\PassportController@register');
+
+Route::group(['middleware' => 'auth:api'], function(){
+    Route::post('get-details', 'API\PassportController@getDetails');
+    Route::get('/empresas', "EmpresaController@index");
+    
+});
+
 //////////// U S E R S ///////////////////////////////
 
 // list all users
@@ -37,7 +46,7 @@ Route::delete('/user/{id}/', "UserController@destroy");
 //////////// C O M P A N Y /////////////////////////////
 
 // list all company
-Route::get('/empresas', "EmpresaController@index");
+// Route::get('/empresas', "EmpresaController@index");
 
 // get a specific company
 Route::get('/empresa/{empresa_id}', "EmpresaController@show");
