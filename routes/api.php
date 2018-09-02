@@ -28,19 +28,24 @@ Route::group(['middleware' => 'auth:api'], function(){
 //////////// U S E R S ///////////////////////////////
 
 // list all users
-Route::get('/users', "UserController@index");
+// Route::get('/users', "UserController@index");
+Route::get('/users', array('middleware' => 'cors', 'uses' => 'UserController@index'));
 
 // get a specific user
-Route::get('/user/{id}', "UserController@show");
+// Route::get('/user/{id}', "UserController@show");
+Route::get('/user/{id}', array('middleware' => 'cors', 'uses' => 'UserController@show'));
 
 // create new user
-Route::post('/user', "UserController@store");
+// Route::post('/user', "UserController@store");
+Route::post('/user', array('middleware' => 'cors', 'uses' => 'UserController@store'));
 
 // update user existent
-Route::put('/user/{id}', "UserController@update");
+// Route::put('/user/{id}', "UserController@update");
+Route::put('/user/{id}', array('middleware' => 'cors', 'uses' => 'UserController@update'));
 
 // delete user
-Route::delete('/user/{id}/', "UserController@destroy");
+// Route::delete('/user/{id}/', "UserController@destroy");
+Route::delete('/user/{id}', array('middleware' => 'cors', 'uses' => 'UserController@destroy'));
 
 //////////// C O M P A N Y /////////////////////////////
 
@@ -48,32 +53,38 @@ Route::delete('/user/{id}/', "UserController@destroy");
 // Route::get('/empresas', "EmpresaController@index");
 
 // get a specific company
-Route::get('/empresa/{empresa_id}', "EmpresaController@show");
+// Route::get('/empresa/{empresa_id}', "EmpresaController@show");
+Route::get('/empresa/{empresa_id}', array('middleware' => 'cors', 'uses' => 'EmpresaController@show'));
 
 // create new company
-Route::post('/empresa', "EmpresaController@store");
+// Route::post('/empresa', "EmpresaController@store");
+Route::post('/empresa', array('middleware' => 'cors', 'uses' => 'EmpresaController@store'));
 
-Route::post('/verify/empresa', "EmpresaController@verify");
+// Route::post('/verify/empresa', "EmpresaController@verify");
+Route::post('/verify/empresa', array('middleware' => 'cors', 'uses' => 'EmpresaController@verify'));
 
 // update company existent
-Route::put('/empresa/{empresa_id}', "EmpresaController@update");
+// Route::put('/empresa/{empresa_id}', "EmpresaController@update");
+Route::put('/empresa/{empresa_id}', array('middleware' => 'cors', 'uses' => 'EmpresaController@update'));
 
 // delete company
-Route::delete('/empresa/{empresa_id}/', "EmpresaController@destroy");
+// Route::delete('/empresa/{empresa_id}/', "EmpresaController@destroy");
+Route::delete('/empresa/{empresa_id}', array('middleware' => 'cors', 'uses' => 'EmpresaController@destroy'));
 
 //////////// D O C U M E N T /////////////////////////////
 
 // list all document
-Route::get('/documento', "DocumentoController@index");
+// Route::get('/documentos', "DocumentoController@index");
+Route::get('/documentos', array('middleware' => 'cors', 'uses' => 'DocumentoController@index'));
 
 // get a specific document
-Route::get('/documento/{id}', "DocumentoController@show");
+Route::get('/documento/{id}', array('middleware' => 'cors', 'uses' => "DocumentoController@show"));
 
 // create new document
-Route::post('/documento', "DocumentoController@store");
+Route::post('/documento', array('middleware' => 'cors', 'uses' => "DocumentoController@store"));
 
 // update document existent
-Route::put('/documento/{id}', "DocumentoController@update");
+Route::put('/documento/{id}', array('middleware' => 'cors', 'uses' => "DocumentoController@update"));
 
 // delete document
-Route::delete('/documento/{id}/', "DocumentoController@destroy");
+Route::delete('/documento/{id}/', array('middleware' => 'cors', 'uses' => "DocumentoController@destroy"));
