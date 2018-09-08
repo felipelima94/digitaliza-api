@@ -16,20 +16,36 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('login', 'API\PassportController@login');
-Route::post('register', 'API\PassportController@register');
+Route::group(['middleware' => 'cors'], function() {
+    
+    Route::post('login', 'API\PassportController@login');
+    Route::post('register', 'API\PassportController@register');
+    
+    
+    Route::post('new/Empresa', 'EmpresaUsuariosController@register');
+    
+    // rotas autenticadas   
+    Route::group(['middleware' => 'auth:api'], function(){
+        Route::post('/get-details', 'API\PassportController@getDetails');
+        Route::middleware('auth:api')->get('empresas', "EmpresaController@index");
+        // Route::get('/empresas', "EmpresaController@index");
+    });
+    
+    // list all users
+    Route::get('/users', "UserController@index");
 
-Route::group(['middleware' => 'auth:api'], function(){
-    Route::post('get-details', 'API\PassportController@getDetails');
-    Route::get('/empresas', "EmpresaController@index");
+    // list all empresa_usuarios
+    Route::get('/empresa-usuario', 'EmpresaUsuariosController@index');
+    
     
 });
+// Route::get('/empresas', array('middleware' => 'cors', 'uses' => "EmpresaController@index"));
 
 //////////// U S E R S ///////////////////////////////
 
 // list all users
 // Route::get('/users', "UserController@index");
-Route::get('/users', array('middleware' => 'cors', 'uses' => 'UserController@index'));
+// Route::get('/users', array('middleware' => 'cors', 'uses' => 'UserController@index'));
 
 // get a specific user
 // Route::get('/user/{id}', "UserController@show");

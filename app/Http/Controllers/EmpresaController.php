@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests;
+use Validator;
 use App\Empresa;
+use App\User;
 use App\Http\Resources\Empresa as EmpresaResource;
 
 class EmpresaController extends Controller
 {
+	public $successStatus = 200;
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -20,6 +24,61 @@ class EmpresaController extends Controller
 
 		return EmpresaResource::collection($Empresa);
 	}
+
+	public function register(Request $request)
+    {
+
+		// register new business
+		$post = $request->all();
+
+		$getUserResquest = $post['usuario'];
+        $validator = Validator::make($getUserResquest, [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'user_name' => 'required|unique:users',
+            'password' => 'required|min:8',
+            'c_password' => 'required|same:password',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);            
+        }
+
+		$getempresaResquest = $post['empresa'];
+		$validator = Validator::make($getempresaResquest, [
+			'razao_social' => 'required|unique:empresas',
+			'nome_fantasia' => 'required|unique:empresas',
+			'cnpj' => 'required|unique:empresas',
+			'inscricao_estadual' => '|unique:empresas',
+			'email' => 'required',
+			'telefone1' => 'required',
+			'cep' => 'required',
+			'endereco' => 'required',
+			'numero' => 'required',
+			'cidade' => 'required',
+			'uf' => 'required',
+			'validade' => 'required'
+		]);
+
+		if ($validator->fails()) {
+            return response()->json(['error'=>$validator->errors()], 401);            
+        }
+
+		$newEmpresa = $getempresaResquest;
+		$empresa = Empresa::create($newEmpresa);
+		
+		// insert new user
+        $input = $getUserResquest;
+        $input['password'] = bcrypt($input['password']);
+		$user = User::create($input);
+		
+        $success['token'] =  $user->createToken('MyApp')->accessToken;
+        $success['id'] = $user->id;
+		$success['first_name'] =  $user->first_name;
+		$success['Empresa'] = $empresa;
+
+        return response()->json(['success'=>$success], $this->successStatus);
+    }
 
 	/**
 	 * Show the form for creating a new resource.
@@ -99,6 +158,7 @@ class EmpresaController extends Controller
 		if(!Empresa::where('cnpj', '=', $request->input('cnpj'))->get()->isEmpty()) {
 			array_push($uso, "cnpj");
 		}
+		if($request->input('inscricao_estadual') != null)
 		if(!Empresa::where('inscricao_estadual', '=', $request->input('inscricao_estadual'))->get()->isEmpty()) {
 			array_push($uso, "inscricao_estadual");
 		}

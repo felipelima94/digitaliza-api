@@ -1,29 +1,16 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+# How install #
+##  You will need install composer ##
+In the prompt write
+> composer install
 
-### What is this repository for? ###
+## After install composer you need rum the migrations ##
+In the prompt write
+> php artisan migrate
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## You will need install passport ##
+In the prompt write
+> php artisan passport:install
 
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+Make sure you has the database db-digitaliza created
