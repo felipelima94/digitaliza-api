@@ -22,6 +22,12 @@ class DocumentoController extends Controller
 		return DocumentoResource::collection($documento);
 	}
 
+	public function getDocumentoByEmpresa($empresa_id) {
+		$documentos = Documento::where('empresa_id', '=', $empresa_id)->get();
+
+		return DocumentoResource::collection($documentos);
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *

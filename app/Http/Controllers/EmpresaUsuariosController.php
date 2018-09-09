@@ -9,6 +9,7 @@ use App\Empresa;
 use App\User;
 use App\EmpresaUsuarios;
 use App\Http\Resources\EmpresaUsuarios as EmpresaUsuariosResource;
+use App\Http\Resources\Empresa as EmpresaResource;
 
 class EmpresaUsuariosController extends Controller
 {
@@ -19,7 +20,13 @@ class EmpresaUsuariosController extends Controller
 		$Empresa = EmpresaUsuarios::all();
 
 		return EmpresaUsuariosResource::collection($Empresa);
-    }
+	}
+	
+	public function getEmpresaByUser($user_id) {
+		$empresaUsuario = EmpresaUsuarios::where('usuario_id', $user_id)->get()->first();
+		$empresa = Empresa::where('id', $empresaUsuario->empresa_id)->get();
+		return EmpresaResource::collection($empresa);
+	}
     
     
 	public function register(Request $request)

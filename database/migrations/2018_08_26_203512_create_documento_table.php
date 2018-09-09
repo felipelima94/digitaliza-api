@@ -19,6 +19,7 @@ class CreateDocumentoTable extends Migration
             $table->integer('usuario_id')->unsigned(); // author
             $table->string('nome_arquivo');
             $table->string('local_armazenado');
+            $table->string('tamanho')->nullable();
             // $table->date('validade');
             $table->timestamps();
 
