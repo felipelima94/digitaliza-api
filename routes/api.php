@@ -19,7 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['middleware' => 'cors'], function() {
     
     Route::post('login', 'API\PassportController@login');
-    Route::post('register', 'API\PassportController@register');
+    Route::middleware('auth:api')->post('logout', 'API\PassportController@logout');
+    // Route::post('register', 'API\PassportController@register'); // usar 'new/Empresa'
     
     
     Route::post('new/Empresa', 'EmpresaUsuariosController@register');

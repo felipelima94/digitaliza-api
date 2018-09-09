@@ -45,6 +45,7 @@ class UserController extends Controller
 		$user->last_name  	  = $request->input('last_name');
 		$user->user_name  	  = $request->input('user_name');
 		$user->password   	  = bcrypt($request->input('password'));
+		$user->pic     	  	  = $request->input('pic');
 		$user->master     	  = $request->input('master');
 		$user->status     	  = $request->input('status');
 		$user->remember_token = str_random(10);
@@ -94,6 +95,7 @@ class UserController extends Controller
 		$user->last_name  	  = $request->input('last_name');
 		$user->user_name  	  = $request->input('user_name');
 		$user->password   	  = bcrypt($request->input('password'));
+		$user->pic     	  	  = $request->input('pic');
 		$user->master     	  = $request->input('master');
 		$user->status     	  = $request->input('status');
 		$user->remember_token = str_random(10);

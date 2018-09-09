@@ -4,8 +4,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
 use Illuminate\Support\Facades\Auth;
+use App\User;
+use App\OauthAccessToken;
 use Validator;
 
 class PassportController extends Controller
@@ -67,6 +68,16 @@ class PassportController extends Controller
     {
         $user = Auth::user();
         return response()->json(['success' => $user], $this->successStatus);
+    }
+
+    public function logout()
+    {
+        if (Auth::check()) {
+            Auth::user()->token()->revoke();
+            return response()->json(['success' =>'logout_success'],200); 
+        }else{
+            return response()->json(['error' =>'api.something_went_wrong'], 500);
+        }
     }
 }
 ?>
