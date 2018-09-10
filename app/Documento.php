@@ -19,4 +19,8 @@ class Documento extends Model
     public function empresa() {
         return $this->hasOne("App\Empresa", "id", "empresa_id");
     }
+
+    public function pasta() {
+        return $this->hasOne("App\Pastas", "id", "local_armazenado");
+    }
 }

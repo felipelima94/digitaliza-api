@@ -18,14 +18,16 @@ class CreateDocumentoTable extends Migration
             $table->integer('empresa_id')->unsigned();
             $table->integer('usuario_id')->unsigned(); // author
             $table->string('nome_arquivo');
-            $table->string('local_armazenado');
-            $table->string('tamanho')->nullable();
-            // $table->date('validade');
+            $table->integer('local_armazenado');
+            $table->string('tamanho')->nullable()->default('--');
+            $table->string('type')->nullable()->default('unknown');
             $table->timestamps();
 
             $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
 
             $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->foreign('local_armazenado')->references('id')->on('pastas')->onDelete('cascade');
 
         });
     }

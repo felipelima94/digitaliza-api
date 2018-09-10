@@ -19,11 +19,11 @@ class Documento extends JsonResource
         return [
 			'id' 		 => $this->id,
 			'nome_arquivo' => $this->nome_arquivo,
-            'local_armazenado'  => $this->local_armazenado,
+            'local_armazenado'  => $this->pasta,
             'usuario' => $this->user,
             // 'empresa' => $this->empresa,
             // 'created_at' => $this->created_at,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            // 'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s')
 		];
     }
