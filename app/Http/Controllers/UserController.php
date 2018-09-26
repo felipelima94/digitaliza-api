@@ -55,6 +55,14 @@ class UserController extends Controller
 		}
 	}
 
+	public function verify(Requesquest $request) {
+		$uso = [];
+		if (!User::where('user_name', '=', $request->input('user_name'))->get()->isEmpty()) {
+			array_push($uso, "user_name");
+		}
+		return uso;
+	}
+
 	/**
 	 * Display the specified resource.
 	 *
