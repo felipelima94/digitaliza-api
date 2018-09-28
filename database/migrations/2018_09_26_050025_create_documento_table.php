@@ -23,11 +23,10 @@ class CreateDocumentoTable extends Migration
             $table->string('type')->nullable()->default('unknown');
             $table->timestamps();
 
-            $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
-
-            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
-
-            $table->foreign('local_armazenado')->references('id')->on('pastas')->onDelete('cascade');
+            // $table->foreign('local_armazenado')->references('id')->on('pastas')->onDelete('cascade');
+            
+			$table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
+			$table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade');
 
         });
     }

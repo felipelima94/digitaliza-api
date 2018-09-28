@@ -19,8 +19,8 @@ class CreateHistoricoTable extends Migration
             $table->string('operacao');
             $table->timestamps();
 
-            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('documento_id')->references('id')->on('documentos')->onDelete('cascade');
+            // $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade');
+            // $table->foreign('documento_id')->references('id')->on('documentos')->onDelete('cascade');
         });
     }
 
