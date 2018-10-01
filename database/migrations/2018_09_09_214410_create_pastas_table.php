@@ -15,7 +15,7 @@ class CreatePastasTable extends Migration
 	{
 		Schema::create('pastas', function (Blueprint $table) {
 			$table->increments('id');
-			$table->string('nome', 100);
+			$table->string('nome', 100)->default('Home');
 			$table->integer('raiz')->unsigned()->nullable();
 			$table->integer('usuario_id')->unsigned();
 			$table->integer('empresa_id')->unsigned();

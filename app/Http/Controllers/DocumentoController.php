@@ -28,6 +28,12 @@ class DocumentoController extends Controller
 		return DocumentoResource::collection($documentos);
 	}
 
+	public function getDocumentoByFolder($id_folder) {
+		$documentos = Documento::where('local_armazenado', '=', $id_folder)->get();
+
+		return DocumentoResource::collection($documentos);
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -52,6 +58,8 @@ class DocumentoController extends Controller
 		$documento->usuario_id       = $request->input('usuario_id');
 		$documento->nome_arquivo	 = $request->input('nome_arquivo');
 		$documento->local_armazenado = $request->input('local_armazenado');   
+		$documento->tamanho			 = $request->input('tamanho');
+		$documento->type 			 = $request->input('type');
 
 		if($documento->save()) {
 			return new DocumentoResource($documento);
@@ -97,6 +105,8 @@ class DocumentoController extends Controller
 		$documento->usuario_id       = $request->input('usuario_id');
 		$documento->nome_arquivo	 = $request->input('nome_arquivo');
 		$documento->local_armazenado = $request->input('local_armazenado');
+		$documento->tamanho			 = $request->input('tamanho');
+		$documento->type 			 = $request->input('type');
 	}
 
 	/**

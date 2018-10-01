@@ -30,7 +30,8 @@ class Empresa extends JsonResource
 			'uf' 	 => $this->uf,
             'cep' 	 => $this->cep,
 			'status' 	 => $this->status,
-			'validade' => $this->validade,            
+			'validade' => $this->validade,
+			'storage' => $this->storage
 			// 'created_at' => $this->created_at,
 			// 'updated_at' => $this->updated_at
 		];

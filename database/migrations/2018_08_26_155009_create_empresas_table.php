@@ -29,6 +29,7 @@ class CreateEmpresasTable extends Migration
 		    $table->string('cep');
             $table->boolean('status')->nullable()->default(true);
             $table->date('validade');
+            $table->integer('storage')->nullable(); // initial folder
             $table->timestamps();
         });
     }

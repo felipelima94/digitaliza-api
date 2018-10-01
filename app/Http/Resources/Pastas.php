@@ -3,9 +3,10 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\User as UserResource;
+// use App\Http\Resources\User as UserResource;
+// use App\Http\Resources\Documento as DocumentoResource;
 
-class Documento extends JsonResource
+class Pastas extends JsonResource
 {
 	/**
 	 * Transform the resource into an array.
@@ -16,16 +17,15 @@ class Documento extends JsonResource
 	public function toArray($request)
 	{
 		// return parent::toArray($request);
+		$userAuthor['first_name'] = $this->user->first_name;
+		$userAuthor['last_name'] = $this->user->last_name;
 		return [
-			'id' 		 => $this->id,
-			'nome_arquivo' => $this->nome_arquivo,
-			'local_armazenado'  => $this->pasta,
-			'usuario' => $this->user,
-			'tamanho' => $this->tamanho,
-			'tipo'    => $this->type,
-			// 'empresa' => $this->empresa,
+			'id' 	=> $this->id,
+			'nome'  => $this->nome,
+            'usuario' => $userAuthor,
+			'raiz'	=> $this->getRaiz,
+			// 'pastas'=> $this->pastas
 			// 'created_at' => $this->created_at,
-			// 'created_at' => $this->created_at->format('Y-m-d H:i:s'),
 			'updated_at' => $this->updated_at->format('Y-m-d H:i:s')
 		];
 	}

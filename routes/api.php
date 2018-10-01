@@ -31,7 +31,8 @@ Route::group(['middleware' => 'cors'], function() {
         Route::get('/documentos', "DocumentoController@index");
         // Route::get('/documentos', array('middleware' => 'cors', 'uses' => 'DocumentoController@index'));
 
-        Route::get('/documentos/{empresa_id}', "DocumentoController@getDocumentoByEmpresa");
+        // Route::get('/documentos/{empresa_id}', "DocumentoController@getDocumentoByEmpresa");
+        Route::get('/documentos/{id_folder}', 'DocumentoController@getDocumentoByFolder');
 
         // get a specific document
         Route::get('/documento/{id}', array('middleware' => 'cors', 'uses' => "DocumentoController@show"));
@@ -44,6 +45,18 @@ Route::group(['middleware' => 'cors'], function() {
 
         // delete document
         Route::delete('/documento/{id}/', array('middleware' => 'cors', 'uses' => "DocumentoController@destroy"));
+
+        // ///////////// P A S T A S ///////////// //
+        // get list of folder
+        Route::get('/pasta/{id}', 'PastasController@childFolders');
+
+        // get rastro
+        Route::get('/pasta/rastro/{id}', 'PastasController@getRastro');
+
+        // criar pasta
+        Route::post('/pasta', 'PastasController@store');
+
+        // Route::post('/pasta', 'PastasController@new');
 
     });
     

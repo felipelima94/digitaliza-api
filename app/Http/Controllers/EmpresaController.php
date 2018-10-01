@@ -113,6 +113,7 @@ class EmpresaController extends Controller
 		$empresa->cep     	  		 = $request->input('cep');
 		$empresa->status     	  	 = $request->input('status');
 		$empresa->validade     	  	 = $request->input('validade');
+		$empresa->storage			 = $request->input('storage');
 		// $empresa->created_at     	  = $request->input('created_at');
 		// $empresa->update_at     	  = $request->input('update_at');        
 
@@ -191,6 +192,7 @@ class EmpresaController extends Controller
 		$empresa->cep    	         = $request->input('cep');
 		$empresa->status    	     = $request->input('status');
 		$empresa->validade           = $request->input('validade');
+		$empresa->storage			 = $request->input('storage');
 
 		if($empresa->save()) {
 			return new EmpresaResource($empresa);

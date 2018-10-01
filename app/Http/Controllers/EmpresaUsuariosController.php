@@ -7,9 +7,11 @@ use App\Http\Requests;
 use Validator;
 use App\Empresa;
 use App\User;
+use App\Pastas;
 use App\EmpresaUsuarios;
 use App\Http\Resources\EmpresaUsuarios as EmpresaUsuariosResource;
 use App\Http\Resources\Empresa as EmpresaResource;
+use Illuminate\Support\Facades\DB;
 
 class EmpresaUsuariosController extends Controller
 {
@@ -80,6 +82,16 @@ class EmpresaUsuariosController extends Controller
 			'empresa_id' => $empresa->id
 		];
 		$empresaUsuario = EmpresaUsuarios::create($newEmpresaUsuario);
+
+		$newFolderInit = [
+			'usuario_id' => $user->id,
+			'empresa_id' => $empresa->id
+		];
+		mkdir("/var/www/html/digitaliza-api/public/documentos/Home".$empresa->id);		
+
+		$pasta = Pastas::create($newFolderInit);
+
+		DB::table('empresas')->where('id', $empresa->id)->update(['storage' => $pasta->id]);
 		
         $success['token'] =  $user->createToken('MyApp')->accessToken;
         // $success['id'] = $user->id;
