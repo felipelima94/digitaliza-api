@@ -84,10 +84,11 @@ class EmpresaUsuariosController extends Controller
 		$empresaUsuario = EmpresaUsuarios::create($newEmpresaUsuario);
 
 		$newFolderInit = [
+			'nome' 		 => "Home".$empresa->id,
 			'usuario_id' => $user->id,
 			'empresa_id' => $empresa->id
 		];
-		mkdir("/var/www/html/digitaliza-api/public/documentos/Home".$empresa->id);		
+		mkdir("/var/www/html/digitaliza-api/public/documentos/Home".$empresa->id);
 
 		$pasta = Pastas::create($newFolderInit);
 

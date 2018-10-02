@@ -15,7 +15,7 @@ Route::group(['middleware' => 'cors'], function() {
     // /////////// users routes //////////////// //
     Route::post('verify/user', 'UserController@verify');
     
-    Route::post('new/Empresa', 'EmpresaUsuariosController@register');
+    Route::post('new/empresa', 'EmpresaUsuariosController@register');
     
     // rotas autenticadas   
     Route::group(['middleware' => 'auth:api'], function(){
