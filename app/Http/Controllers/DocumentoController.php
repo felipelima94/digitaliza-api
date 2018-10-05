@@ -93,7 +93,7 @@ class DocumentoController extends Controller
 		$documento->tamanho			 = $size;
 		$documento->type 			 = $type;
 		
-		$url = '/var/www/html/digitaliza-api/public/'.$rastro;
+		$url = '/var/www/html/digitaliza-api/public/documentos/'.$rastro;
 		$file->move($url, $file->getClientOriginalName());
 
 		if($documento->save()) {
