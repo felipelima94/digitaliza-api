@@ -53,6 +53,9 @@ Route::group(['middleware' => 'cors'], function() {
         // get rastro
         Route::get('/pasta/rastro/{id}', 'PastasController@getRastro');
 
+        // get full rastro
+        Route::get('/pasta/full-rastro/{id}', 'PastasController@getFullRastro');
+
         // criar pasta
         Route::post('/pasta', 'PastasController@store');
 

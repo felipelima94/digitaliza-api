@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Documento;
 use App\Http\Resources\Documento as DocumentoResource;
+use App\Http\Controllers\PastasController;
+use App\Http\Controllers\EmpresaUsuariosController;
+use Illuminate\Support\Facades\Input;
 
 class DocumentoController extends Controller
 {
@@ -52,14 +55,46 @@ class DocumentoController extends Controller
 	 */
 	public function store(Request $request)
 	{
+		// $res = $request->file->getClientOriginalName();
+		// $input = Input::all();
+		// $file = Input::file();
+		// // $img = $input['file'];
+		// return response()->json(["Input"=>$input['file']->getClientOriginalExtension()], 200);
+		// $input = $request->all();
+		$usuario_id = $request->user()->id;
+		$empresa = new EmpresaUsuariosController;
+		$empresa_id = $empresa->getEmpresaByUser($usuario_id)->id;
 		$documento = new Documento;
-		// $empresa->id                    = $request->input('id');
-		$documento->empresa_id       = $request->input('empresa_id');
-		$documento->usuario_id       = $request->input('usuario_id');
-		$documento->nome_arquivo	 = $request->input('nome_arquivo');
-		$documento->local_armazenado = $request->input('local_armazenado');   
-		$documento->tamanho			 = $request->input('tamanho');
-		$documento->type 			 = $request->input('type');
+		$documento->empresa_id       = $empresa_id;
+		$documento->usuario_id       = $usuario_id;
+		$documento->local_armazenado = Input::get('local_armazenado');
+		
+		// $file = $request->file('file');
+		// $file = Input::file('file');
+		$file = Input::file('file');
+		// $ext = $file->getClientOriginalExtension();
+		
+		
+		$pastas = new PastasController();
+		$rastros = $pastas->getFullRastro($documento->local_armazenado);
+		
+		$original = $rastros->original;
+		
+		$rastro = "";
+		foreach($original as $r) {
+			$rastro .= $r->nome.'/';
+		}
+		
+		
+		$size = $file->getSize();
+		$type = $file->getClientOriginalExtension();
+		
+		$documento->nome_arquivo	 = $file->getClientOriginalName();
+		$documento->tamanho			 = $size;
+		$documento->type 			 = $type;
+		
+		$url = '/var/www/html/digitaliza-api/public/'.$rastro;
+		$file->move($url, $file->getClientOriginalName());
 
 		if($documento->save()) {
 			return new DocumentoResource($documento);

@@ -26,8 +26,8 @@ class EmpresaUsuariosController extends Controller
 	
 	public function getEmpresaByUser($user_id) {
 		$empresaUsuario = EmpresaUsuarios::where('usuario_id', $user_id)->get()->first();
-		$empresa = Empresa::where('id', $empresaUsuario->empresa_id)->get();
-		return EmpresaResource::collection($empresa);
+		$empresa = Empresa::where('id', $empresaUsuario->empresa_id)->get()->first();
+		return new EmpresaResource($empresa);
 	}
     
     

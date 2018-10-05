@@ -91,6 +91,26 @@ class PastasController extends Controller
 		return response()->json($rastoReverse, 200);
 	}
 
+	public function getFullRastro($id) {
+		$rasto = [];
+		$continue = true;
+
+		do {
+			$temp = Pastas::find($id);
+			if(!$temp->raiz > 0)
+			$continue = false;
+			
+			$id = $temp->raiz;
+			
+			array_push($rasto, $temp);
+			
+		} while($continue);
+
+		$rastoReverse = array_reverse($rasto);
+
+		return response()->json($rastoReverse);
+	}
+
 	public function update(Request $request, $id) {
 		$pasta = Pastas::find($id);
 		$pasta->nome 	  	= $request->input('nome');
