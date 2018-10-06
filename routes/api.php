@@ -10,6 +10,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['middleware' => 'cors'], function() {
     
     Route::post('login', 'API\PassportController@login');
+    Route::post('register', 'API\PassportController@register');
     Route::middleware('auth:api')->post('logout', 'API\PassportController@logout');
 
     // /////////// users routes //////////////// //
@@ -46,6 +47,9 @@ Route::group(['middleware' => 'cors'], function() {
         // delete document
         Route::delete('/documento/{id}/', array('middleware' => 'cors', 'uses' => "DocumentoController@destroy"));
 
+        // upload digitaliza
+        Route::post('documento/digitaliza', "DocumentoController@digitaliza");
+        
         // ///////////// P A S T A S ///////////// //
         // get list of folder
         Route::get('/pasta/{id}', 'PastasController@childFolders');

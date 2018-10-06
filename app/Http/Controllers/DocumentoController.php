@@ -55,12 +55,6 @@ class DocumentoController extends Controller
 	 */
 	public function store(Request $request)
 	{
-		// $res = $request->file->getClientOriginalName();
-		// $input = Input::all();
-		// $file = Input::file();
-		// // $img = $input['file'];
-		// return response()->json(["Input"=>$input['file']->getClientOriginalExtension()], 200);
-		// $input = $request->all();
 		$usuario_id = $request->user()->id;
 		$empresa = new EmpresaUsuariosController;
 		$empresa_id = $empresa->getEmpresaByUser($usuario_id)->id;
@@ -69,11 +63,7 @@ class DocumentoController extends Controller
 		$documento->usuario_id       = $usuario_id;
 		$documento->local_armazenado = Input::get('local_armazenado');
 		
-		// $file = $request->file('file');
-		// $file = Input::file('file');
 		$file = Input::file('file');
-		// $ext = $file->getClientOriginalExtension();
-		
 		
 		$pastas = new PastasController();
 		$rastros = $pastas->getFullRastro($documento->local_armazenado);
@@ -84,8 +74,7 @@ class DocumentoController extends Controller
 		foreach($original as $r) {
 			$rastro .= $r->nome.'/';
 		}
-		
-		
+
 		$size = $file->getSize();
 		$type = $file->getClientOriginalExtension();
 		
@@ -115,17 +104,70 @@ class DocumentoController extends Controller
 		return new DocumentoResource($documento);
 	}
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return \Illuminate\Http\Response
-	 */
-	public function edit($id)
+	public function digitaliza(Request $request)
 	{
-		//
-	}
+		$input = Input::all();
 
+		$usuario_id = $request->user()->id;
+		$empresa = new EmpresaUsuariosController;
+		$empresa_id = $empresa->getEmpresaByUser($usuario_id)->id;
+		$documento = new Documento;
+		$documento->empresa_id       = $empresa_id;
+		$documento->usuario_id       = $usuario_id;
+		$documento->local_armazenado = $input['local_armazenado'];
+		$documento->nome_arquivo 	 = $input['filename'].".pdf";
+		$documento->type			 = "pdf";
+		
+		$fileName = $input['filename'];
+		$images = $input['images'];
+		
+		$res = [];
+		$imgsLinks = "";
+		foreach($images as $image) {
+			$imgsLinks .= '/var/www/html/temp/'.$image->getClientOriginalName().",";
+			array_push($res, '/var/www/html/temp/'.$image->getClientOriginalName());
+			$image->move('/var/www/html/temp/', $image->getClientOriginalName());
+		}
+		
+		$pastas = new PastasController();
+		$rastros = $pastas->getFullRastro($documento->local_armazenado);
+		
+		$original = $rastros->original;
+		
+		$rastro = "";
+		foreach($original as $r) {
+			$rastro .= $r->nome.'/';
+		}
+		
+		$storage = '/var/www/html/digitaliza-api/public/documentos/'.$rastro;
+		
+		$py = exec("python3 /var/www/html/crawler/tess.1.py --image '$imgsLinks' --name '$fileName' --storage '$storage'");
+
+		$documento->tamanho = filesize($storage.$documento->nome_arquivo);
+		
+		foreach($res  as $files) {
+			unlink($files);
+		}
+		if($documento->save()) {
+			$pdf = new DocumentoResource($documento);
+			$file = $storage.$input['filename'].'.txt';
+			
+			$documento = new Documento();
+			$documento->empresa_id = $pdf->empresa_id;
+			$documento->usuario_id = $pdf->usuario_id;
+			$documento->local_armazenado = $pdf->local_armazenado;
+			$documento->nome_arquivo = $input['filename'].".txt";
+			$documento->type = "txt";
+			$documento->tamanho = filesize($storage.$documento->nome_arquivo);
+			if($documento->save()){
+				$txt = new DocumentoResource($documento);
+				$crawler = exec("python3 /var/www/html/crawler/Crawler.1.2.py --txtid $txt->id --pdfid $pdf->id --file '$file'");
+				return response()->json(["crawler"=> $crawler, "pdf"=>$pdf, "txt"=>$txt], 200);
+			} else {return response()->json("error: não foi possivel salvar o arquivo txt", 500);}
+
+		} else { return response()->json("error: não foi possivel salvar o arquivo pdf ou realizar a digitalização", 500); }
+	}
+	
 	/**
 	 * Update the specified resource in storage.
 	 *
