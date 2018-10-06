@@ -49,6 +49,9 @@ Route::group(['middleware' => 'cors'], function() {
 
         // upload digitaliza
         Route::post('documento/digitaliza', "DocumentoController@digitaliza");
+
+        // ///////////// S E A R C H ////////////// //
+        Route::post('documento/search', "SearchController@search");
         
         // ///////////// P A S T A S ///////////// //
         // get list of folder

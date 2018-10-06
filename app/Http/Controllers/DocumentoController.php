@@ -142,6 +142,9 @@ class DocumentoController extends Controller
 		$storage = '/var/www/html/digitaliza-api/public/documentos/'.$rastro;
 		
 		$py = exec("python3 /var/www/html/crawler/tess.1.py --image '$imgsLinks' --name '$fileName' --storage '$storage'");
+		if($py != "Ok") {
+			return response()->json('Error tess unkown', 500);
+		}
 
 		$documento->tamanho = filesize($storage.$documento->nome_arquivo);
 		
@@ -161,7 +164,7 @@ class DocumentoController extends Controller
 			$documento->tamanho = filesize($storage.$documento->nome_arquivo);
 			if($documento->save()){
 				$txt = new DocumentoResource($documento);
-				$crawler = exec("python3 /var/www/html/crawler/Crawler.1.2.py --txtid $txt->id --pdfid $pdf->id --file '$file'");
+				$crawler = exec("python3 /var/www/html/crawler/Crawler.1.2.py --empresaid $empresa_id --txtid $txt->id --pdfid $pdf->id --file '$file'");
 				return response()->json(["crawler"=> $crawler, "pdf"=>$pdf, "txt"=>$txt], 200);
 			} else {return response()->json("error: não foi possivel salvar o arquivo txt", 500);}
 
