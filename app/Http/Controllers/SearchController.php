@@ -22,7 +22,7 @@ class SearchController extends Controller
         foreach($docs_id as $doc_id) {
             if(strlen($doc_id) > 0) {
                 $response = explode(",", $doc_id);
-                array_push($docs, Documento::find($response[1]));
+                array_push($docs, new DocumentoResource(Documento::find($response[1])));
             }
         }
 
