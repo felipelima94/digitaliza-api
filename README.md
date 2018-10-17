@@ -5,6 +5,9 @@
 In the prompt write
 > composer install
 
+## You must generate Application Key ##
+> php artisan key:generate
+
 ## After install composer you need rum the migrations ##
 In the prompt write
 > php artisan migrate
