@@ -55,6 +55,10 @@ class UserController extends Controller
 		}
 	}
 
+	public function getUserByEmpresa($id) {
+		return $id;
+	}
+
 	public function verify(Requesquest $request) {
 		$uso = [];
 		if (!User::where('user_name', '=', $request->input('user_name'))->get()->isEmpty()) {
