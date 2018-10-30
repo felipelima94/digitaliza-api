@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Input;
 
 class DocumentoController extends Controller
 {
+	private $documentFolder = "/var/www/html/digitaliza-api/public/documentos/";
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -82,7 +83,7 @@ class DocumentoController extends Controller
 		$documento->tamanho			 = $size;
 		$documento->type 			 = $type;
 		
-		$url = '/var/www/html/digitaliza-api/public/documentos/'.$rastro;
+		$url = $this->documentFolder.$rastro;
 		$file->move($url, $file->getClientOriginalName());
 
 		if($documento->save()) {
@@ -180,13 +181,32 @@ class DocumentoController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
-		$documento->id		      	 = $request->input('id');
-		$documento->empresa_id       = $request->input('empresa_id');
-		$documento->usuario_id       = $request->input('usuario_id');
+		$documento = Documento::find($id);
+
+		// $user_id = $request->user()->id;
+		// $empresa = new EmpresaUsuariosController;
+		// $empresa_id = $empresa->getEmpresaByUser($user_id)->id;
+		$oldName = $documento->nome_arquivo;
+
 		$documento->nome_arquivo	 = $request->input('nome_arquivo');
-		$documento->local_armazenado = $request->input('local_armazenado');
-		$documento->tamanho			 = $request->input('tamanho');
-		$documento->type 			 = $request->input('type');
+
+		$pastas = new PastasController();
+		$rastros = $pastas->getFullRastro($documento->local_armazenado);
+		
+		$original = $rastros->original;
+		
+		$rastro = "";
+		foreach($original as $r) {
+			$rastro .= $r->nome.'/';
+		}
+		
+		$uri = $this->documentFolder.$rastro;
+
+		if(rename($uri.$oldName, $uri.$documento->nome_arquivo)){
+			if($documento->save())
+				return new DocumentoResource($documento);
+			}
+		return response()->json("Error rename", 500);
 	}
 
 	/**
