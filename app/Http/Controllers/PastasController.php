@@ -8,9 +8,12 @@ use App\Pastas;
 use App\User;
 use App\Http\Resources\Pastas as PastasResource;
 use App\Http\Resources\User as UserResource;
+use App\Http\Controllers\DocumentoController;
 
 class PastasController extends Controller
 {
+	private $documentoRoot = "/var/www/html/digitaliza-api/public/documentos/";
+
 	//
 	public function index() {
 		$pastas = Pastas::all();
@@ -34,7 +37,7 @@ class PastasController extends Controller
 		$pasta->raiz 	  	= null;
 		$pasta->empresa_id 	= $request->input('empresa_id');
 		$pasta->usuario_id 	= $request->input('usuario_id');
-		mkdir("/var/www/html/digitaliza-api/public/documentos/".$pasta->nome);
+		mkdir($this->documentoRoot.$pasta->nome);
 
 		if($pasta->save()) {
 			return new PastasResource($pasta);
@@ -61,7 +64,7 @@ class PastasController extends Controller
 		for($i = 0; $i < count($result); $i++) {
 			$link .= $result[$i]->nome."/";
 		}
-		mkdir("/var/www/html/digitaliza-api/public/documentos/".$link.$pasta->nome);
+		mkdir($this->documentoRoot.$link.$pasta->nome);
 
 		
 		if($pasta->save()) {
@@ -113,13 +116,60 @@ class PastasController extends Controller
 
 	public function update(Request $request, $id) {
 		$pasta = Pastas::find($id);
-		$pasta->nome 	  	= $request->input('nome');
-		$pasta->raiz 	  	= $request->input('raiz');
-		$pasta->empresa_id 	= $request->input('empresa_id');
-		$pasta->usuario_id 	= $request->input('usuario_id');
+		$oldName = $pasta->nome;
+		$pasta->nome = $request->input('nome');
 
-		if($user->save()) {
-			return new PastasResource($pasta);
+		$rastros = $this->getFullRastro($id);
+		$original = $rastros->original;
+		
+		$rastro = "";
+		for($i = 0; $i < count($original)-1; $i++) {
+			$rastro .= $original[$i]->nome.'/';
 		}
+
+		if(rename($this->documentoRoot.$rastro.$oldName, $this->documentoRoot.$rastro.$pasta->nome)) {
+			if($pasta->save()) {
+				return new PastasResource($pasta);
+			}
+		}
+		return response()->json("Error", 500);
 	}
+
+	public function destroy($id) {
+		$pasta = Pastas::findOrFail($id);
+
+		$return = [];
+		
+		$documentoController = new DocumentoController;
+		$documentos = $documentoController->getDocumentoByFolder($id);
+
+		foreach($documentos as $documento) {
+			$temp = $documentoController->destroy($documento->id);
+			array_push($return, $temp);
+		}
+
+		$childsFolder = $this->childFolders($id);
+		foreach($childsFolder as $childFolder) {
+			$temp = $this->destroy($childFolder->id);
+			array_push($return, $temp);
+		}
+
+		$rastros = $this->getFullRastro($id);
+		$original = $rastros->original;
+		
+		$rastro = "";
+		foreach($original as $r) {
+			$rastro .= $r->nome.'/';
+		}
+
+		if(rmdir($this->documentoRoot.$rastro)){
+			if($pasta->delete()){
+				return $return;
+				// return new PastasResource($pasta);
+			}
+		}
+		return response()->json("Error", 500);
+	}
+
+
 }

@@ -8,6 +8,7 @@ use App\Documento;
 use App\Http\Resources\Documento as DocumentoResource;
 use App\Http\Controllers\PastasController;
 use App\Http\Controllers\EmpresaUsuariosController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
 class DocumentoController extends Controller
@@ -219,8 +220,22 @@ class DocumentoController extends Controller
 	{
 		$documento = Documento::findOrFail($id);
 
-		if($documento->delete()) {
-			return new DocumentoResource($documento);
+		$pastas = new PastasController();
+		$rastros = $pastas->getFullRastro($documento->local_armazenado);
+		
+		$original = $rastros->original;
+		
+		$rastro = "";
+		foreach($original as $r) {
+			$rastro .= $r->nome.'/';
 		}
+
+		DB::table('localizacao_palavra')->where('id_doc', '=', $documento->id)->delete();
+		if(unlink($this->documentFolder.$rastro.$documento->nome_arquivo)) {
+			if($documento->delete()) {
+				return new DocumentoResource($documento);
+			}
+		}
+		return response()->json("Error", 500);
 	}
 }

@@ -66,7 +66,11 @@ Route::group(['middleware' => 'cors'], function() {
         // criar pasta
         Route::post('/pasta', 'PastasController@store');
 
-        // Route::post('/pasta', 'PastasController@new');
+        // update folder
+        Route::put('/pasta/{id}', 'PastasController@update');
+
+        // delete folder
+        Route::delete('/pasta/{id}', 'PastasController@destroy');
 
     });
     
