@@ -127,12 +127,16 @@ class PastasController extends Controller
 			$rastro .= $original[$i]->nome.'/';
 		}
 
-		if(rename($this->documentoRoot.$rastro.$oldName, $this->documentoRoot.$rastro.$pasta->nome)) {
-			if($pasta->save()) {
-				return new PastasResource($pasta);
+		if(!is_dir($this->documentoRoot.$rastro.$oldName)) {
+			if(rename($this->documentoRoot.$rastro.$oldName, $this->documentoRoot.$rastro.$pasta->nome)) {
+				if($pasta->save()) {
+					return new PastasResource($pasta);
+				}
 			}
+			return response()->json("Error", 500);
+		} else {
+			return response()->json("false", 200);
 		}
-		return response()->json("Error", 500);
 	}
 
 	public function destroy($id) {

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Input;
 
 class DocumentoController extends Controller
 {
-	private $documentFolder = "/var/www/html/digitaliza-api/public/documentos/";
+	private $documentRoot = "/var/www/html/digitaliza-api/public/documentos/";
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -84,7 +84,7 @@ class DocumentoController extends Controller
 		$documento->tamanho			 = $size;
 		$documento->type 			 = $type;
 		
-		$url = $this->documentFolder.$rastro;
+		$url = $this->documentRoot.$rastro;
 		$file->move($url, $file->getClientOriginalName());
 
 		if($documento->save()) {
@@ -117,7 +117,6 @@ class DocumentoController extends Controller
 		$documento->empresa_id       = $empresa_id;
 		$documento->usuario_id       = $usuario_id;
 		$documento->local_armazenado = $input['local_armazenado'];
-		$documento->nome_arquivo 	 = $input['filename'].".pdf";
 		$documento->type			 = "pdf";
 		
 		$fileName = $input['filename'];
@@ -141,13 +140,21 @@ class DocumentoController extends Controller
 			$rastro .= $r->nome.'/';
 		}
 		
-		$storage = '/var/www/html/digitaliza-api/public/documentos/'.$rastro;
+		$counter = 1;
+		$name = $fileName;
+		while(file_exists($this->documentRoot.$rastro.$name.".pdf")){
+			$name = $fileName."(".$counter.")";
+			$counter++;
+		}
+
+		$storage = $this->documentRoot.$rastro;
 		
-		$py = exec("python3 /var/www/html/crawler/tess.1.py --image '$imgsLinks' --name '$fileName' --storage '$storage'");
+		$py = exec("python3 /var/www/html/crawler/tess.1.py --image '$imgsLinks' --name '$name' --storage '$storage'");
 		if($py != "Ok") {
 			return response()->json('Error tess unkown', 500);
 		}
 
+		$documento->nome_arquivo 	 = $name.".pdf";
 		$documento->tamanho = filesize($storage.$documento->nome_arquivo);
 		
 		foreach($res  as $files) {
@@ -155,13 +162,13 @@ class DocumentoController extends Controller
 		}
 		if($documento->save()) {
 			$pdf = new DocumentoResource($documento);
-			$file = $storage.$input['filename'].'.txt';
+			$file = $storage.$name.'.txt';
 			
 			$documento = new Documento();
 			$documento->empresa_id = $pdf->empresa_id;
 			$documento->usuario_id = $pdf->usuario_id;
 			$documento->local_armazenado = $pdf->local_armazenado;
-			$documento->nome_arquivo = $input['filename'].".txt";
+			$documento->nome_arquivo = $name.".txt";
 			$documento->type = "txt";
 			$documento->tamanho = filesize($storage.$documento->nome_arquivo);
 			if($documento->save()){
@@ -201,13 +208,17 @@ class DocumentoController extends Controller
 			$rastro .= $r->nome.'/';
 		}
 		
-		$uri = $this->documentFolder.$rastro;
+		$uri = $this->documentRoot.$rastro;
 
-		if(rename($uri.$oldName, $uri.$documento->nome_arquivo)){
-			if($documento->save())
-				return new DocumentoResource($documento);
+		if(!file_exists($uri.$oldName)) {
+			if(rename($uri.$oldName, $uri.$documento->nome_arquivo)){
+				if($documento->save())
+					return new DocumentoResource($documento);
 			}
-		return response()->json("Error rename", 500);
+			return response()->json("Error rename", 500);
+		} else {
+			return response()->json(false, 200);
+		}
 	}
 
 	/**
@@ -231,7 +242,7 @@ class DocumentoController extends Controller
 		}
 
 		DB::table('localizacao_palavra')->where('id_doc', '=', $documento->id)->delete();
-		if(unlink($this->documentFolder.$rastro.$documento->nome_arquivo)) {
+		if(unlink($this->documentRoot.$rastro.$documento->nome_arquivo)) {
 			if($documento->delete()) {
 				return new DocumentoResource($documento);
 			}
