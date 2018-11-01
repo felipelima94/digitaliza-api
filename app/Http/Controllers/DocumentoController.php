@@ -210,7 +210,7 @@ class DocumentoController extends Controller
 		
 		$uri = $this->documentRoot.$rastro;
 
-		if(!file_exists($uri.$oldName)) {
+		if(!file_exists($uri.$documento->nome_arquivo)) {
 			if(rename($uri.$oldName, $uri.$documento->nome_arquivo)){
 				if($documento->save())
 					return new DocumentoResource($documento);

@@ -127,7 +127,7 @@ class PastasController extends Controller
 			$rastro .= $original[$i]->nome.'/';
 		}
 
-		if(!is_dir($this->documentoRoot.$rastro.$oldName)) {
+		if(!is_dir($this->documentoRoot.$rastro.$pasta->nome)) {
 			if(rename($this->documentoRoot.$rastro.$oldName, $this->documentoRoot.$rastro.$pasta->nome)) {
 				if($pasta->save()) {
 					return new PastasResource($pasta);

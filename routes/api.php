@@ -45,6 +45,7 @@ Route::group(['middleware' => 'cors'], function() {
         Route::put('/documento/{id}', array('middleware' => 'cors', 'uses' => "DocumentoController@update"));
 
         // delete document
+        Route::post('/documento/delete/{id}/', array('middleware' => 'cors', 'uses' => "DocumentoController@destroy"));
         Route::delete('/documento/{id}/', array('middleware' => 'cors', 'uses' => "DocumentoController@destroy"));
 
         // upload digitaliza
@@ -70,7 +71,8 @@ Route::group(['middleware' => 'cors'], function() {
         Route::put('/pasta/{id}', 'PastasController@update');
 
         // delete folder
-        Route::delete('/pasta/{id}', 'PastasController@destroy');
+        Route::post('/pasta/delete/{id}', 'PastasController@destroy');
+        Route::DELETE('/pasta/{id}', 'PastasController@destroy');
 
     });
     
