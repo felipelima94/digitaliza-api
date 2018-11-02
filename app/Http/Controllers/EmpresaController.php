@@ -57,7 +57,8 @@ class EmpresaController extends Controller
 			'numero' => 'required',
 			'cidade' => 'required',
 			'uf' => 'required',
-			'validade' => 'required'
+			'validade' => 'required',
+			'sufix' => 'required'
 		]);
 
 		if ($validator->fails()) {

@@ -10,6 +10,7 @@ use App\User;
 use App\Pastas;
 use App\EmpresaUsuarios;
 use App\Http\Resources\EmpresaUsuarios as EmpresaUsuariosResource;
+use App\Http\Resources\User as UserResource;
 use App\Http\Resources\Empresa as EmpresaResource;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +30,18 @@ class EmpresaUsuariosController extends Controller
 		$empresa = Empresa::where('id', $empresaUsuario->empresa_id)->get()->first();
 		return new EmpresaResource($empresa);
 	}
-    
+
+	public function getUsersByEmpresa($empresa_id) {
+		$empresaUsuario = EmpresaUsuarios::where('empresa_id', $empresa_id)->get();
+
+		$users = [];
+		foreach($empresaUsuario as $tUsers) {
+			$user = User::find($tUsers->usuario_id);
+			array_push($users, $user);
+		}
+
+		return response()->json($users, 200);
+	}
     
 	public function register(Request $request)
     {
@@ -75,6 +87,7 @@ class EmpresaUsuariosController extends Controller
 		$user = User::create($newUser);
 		
 		$newEmpresa = $getempresaResquest;
+		// algoritmo de gereção de sufixo
 		$newEmpresa->sufix = "dig";
 		$empresa = Empresa::create($newEmpresa);
 
