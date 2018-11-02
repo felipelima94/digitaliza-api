@@ -30,6 +30,7 @@ class CreateEmpresasTable extends Migration
             $table->boolean('status')->nullable()->default(true);
             $table->date('validade');
             $table->integer('storage')->nullable(); // initial folder
+            $table->string('sufix')->nullable()->default('dig');
             $table->timestamps();
         });
     }

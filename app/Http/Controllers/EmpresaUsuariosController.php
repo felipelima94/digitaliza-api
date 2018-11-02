@@ -75,6 +75,7 @@ class EmpresaUsuariosController extends Controller
 		$user = User::create($newUser);
 		
 		$newEmpresa = $getempresaResquest;
+		$newEmpresa->sufix = "dig";
 		$empresa = Empresa::create($newEmpresa);
 
 		$newEmpresaUsuario = [

@@ -178,10 +178,6 @@ class EmpresaController extends Controller
 	{
 		// atualizar os dados da empresa
 		$empresa = Empresa::find($empresa_id);
-		$empresa->razao_social       = $request->input('razao_social');
-		$empresa->nome_fantasia  	 = $request->input('nome_fantasia');
-		$empresa->cnpj  	         = $request->input('cnpj');
-		$empresa->inscricao_estadual = $request->input('inscricao_estadual');
 		$empresa->email              = $request->input('email');
 		$empresa->telefone1	         = $request->input('telefone1');
 		$empresa->telefone2	         = $request->input('telefone2');
@@ -190,9 +186,6 @@ class EmpresaController extends Controller
 		$empresa->cidade	         = $request->input('cidade');
 		$empresa->uf    	         = $request->input('uf');
 		$empresa->cep    	         = $request->input('cep');
-		$empresa->status    	     = $request->input('status');
-		$empresa->validade           = $request->input('validade');
-		$empresa->storage			 = $request->input('storage');
 
 		if($empresa->save()) {
 			return new EmpresaResource($empresa);

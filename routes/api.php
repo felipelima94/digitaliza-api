@@ -26,6 +26,10 @@ Route::group(['middleware' => 'cors'], function() {
 
         Route::get('/empresa-by-user/{user_id}', "EmpresaUsuariosController@getEmpresaByUser");
 
+
+        // ///////// EMPRESA//////////////////
+        Route::put('/empresa/{empresa_id}', 'EmpresaController@update');
+
         //////////// D O C U M E N T /////////////////////////////
 
         // list all document
@@ -72,7 +76,7 @@ Route::group(['middleware' => 'cors'], function() {
 
         // delete folder
         Route::post('/pasta/delete/{id}', 'PastasController@destroy');
-        Route::DELETE('/pasta/{id}', 'PastasController@destroy');
+        Route::delete('/pasta/{id}', array('middleware' => 'cors', 'uses' => 'PastasController@destroy'));
 
     });
     
