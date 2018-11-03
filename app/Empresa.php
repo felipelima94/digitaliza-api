@@ -16,7 +16,7 @@ class Empresa extends Model
      * @var array
      */
     protected $fillable = [
-        'razao_social', 'nome_fantasia', 'cnpj' ,'inscricao_estadual' ,'email' ,'telefone1' ,'cep' ,'endereco' ,'numero' ,'cidade' ,'uf' ,'validade'
+        'razao_social', 'nome_fantasia', 'cnpj' ,'inscricao_estadual' ,'email' ,'telefone1' ,'cep' ,'endereco' ,'numero' ,'cidade' ,'uf' ,'validade', 'sufix'
     ];
 
     /**

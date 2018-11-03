@@ -45,7 +45,49 @@ class EmpresaUsuariosController extends Controller
 
 		return response()->json($users, 200);
 	}
-    
+	
+	public function generateSufix($str) {
+		$sstr = explode(' ', $str);
+		$sufix = "";
+		$vetNome = [];
+	
+		foreach($sstr as $s) {
+			$tsstr = str_split($s);
+			foreach($tsstr as $t) {
+				array_push($vetNome, strtolower($t));
+			}
+			
+			$sufix .= $tsstr[0];
+			if(count($sstr) < 3) {
+				$sufix .= $tsstr[count($tsstr)-1];
+			}
+		}
+		$sufix = strtolower($sufix);
+	
+		$cont = 1;
+		$finalSufix = $sufix;
+	
+		do {
+			$continue = true;
+			$query = Empresa::where('sufix', $finalSufix)->get()->first();
+			if(count($query)) {
+
+				if(count($vetNome) > $cont) {
+					$finalSufix = $sufix.$vetNome[$cont];
+				} else {
+					$finalSufix = $sufix.$vetNome[$cont-count($vetNome)].$vetNome[($cont-count($vetNome))+1];
+				}
+
+				$cont++;
+			} else {
+				$continue = false;
+			}
+	
+		} while($continue);
+	
+		return $finalSufix;
+	}
+
 	public function register(Request $request)
     {
 		// register new business
@@ -91,7 +133,7 @@ class EmpresaUsuariosController extends Controller
 		
 		$newEmpresa = $getempresaResquest;
 		// algoritmo de gereção de sufixo
-		$newEmpresa->sufix = "dig";
+		$newEmpresa['sufix'] = $this->generateSufix($getempresaResquest['nome_fantasia']);
 		$empresa = Empresa::create($newEmpresa);
 
 		$newEmpresaUsuario = [
@@ -118,6 +160,37 @@ class EmpresaUsuariosController extends Controller
 		$success['data'] = new EmpresaUsuariosResource($empresaUsuario);
 
         return response()->json(['success'=>$success], $this->successStatus);
-    }
+	}
+	
+	public function registerUser(Request $request, $user_id=null) {
+		if($user_id != null) {
+			$user = User::find($request->input('id'));
+		} else {
+			$user = new User;
+		}
+		$user->first_name 	  = $request->input('first_name');
+		$user->last_name  	  = $request->input('last_name');
+		$user->user_name  	  = $request->input('user_name');
+		// $user->pic     	  	  = $request->input('pic');
+		$user->master     	  = $request->input('master');
+		$user->status     	  = $request->input('status');
+		$user->remember_token = str_random(10);
+		if((strlen($request->input('password')) > 0) && ($request->input('password') == $request->input('c_password')))
+			$user->password	  = bcrypt($request->input('password'));
+
+		$empresa_id = $request->input('empresa_id');
+
+		if($user->save()) {
+			if($user_id == null) {
+				$newEmpresaUsuario = [
+					'usuario_id' => $user->id,
+					'empresa_id' => $empresa_id
+				];
+				$empresaUsuario = EmpresaUsuarios::create($newEmpresaUsuario);
+			}
+			return new UserResource($user);
+		}
+
+	}
 
 }

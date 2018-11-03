@@ -24,6 +24,12 @@ Route::group(['middleware' => 'cors'], function() {
 
         // /////////// EmpresaUsuario /////////////////////// //
 
+        // new user of company
+        Route::post('/registerUser', "EmpresaUsuariosController@registerUser");
+
+        // update user of company
+        Route::put('/registerUser/{user_id}', "EmpresaUsuariosController@registerUser");
+
         Route::get('/empresa-by-user/{user_id}', "EmpresaUsuariosController@getEmpresaByUser");
 
         Route::get("/usuarios-by-empresa/{empresa_id}", "EmpresaUsuariosController@getUsersByEmpresa");

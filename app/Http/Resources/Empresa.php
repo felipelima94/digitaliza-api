@@ -31,7 +31,8 @@ class Empresa extends JsonResource
             'cep' 	 => $this->cep,
 			'status' 	 => $this->status,
 			'validade' => $this->validade,
-			'storage' => $this->storage
+			'storage' => $this->storage,
+			'sufix' => $this->sufix,
 			// 'created_at' => $this->created_at,
 			// 'updated_at' => $this->updated_at
 		];
