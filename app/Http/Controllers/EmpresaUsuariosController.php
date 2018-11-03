@@ -31,13 +31,16 @@ class EmpresaUsuariosController extends Controller
 		return new EmpresaResource($empresa);
 	}
 
-	public function getUsersByEmpresa($empresa_id) {
+	public function getUsersByEmpresa(Request $request, $empresa_id) {
 		$empresaUsuario = EmpresaUsuarios::where('empresa_id', $empresa_id)->get();
 
 		$users = [];
 		foreach($empresaUsuario as $tUsers) {
-			$user = User::find($tUsers->usuario_id);
-			array_push($users, $user);
+		
+			if($usuario_id = $request->user()->id != $tUsers->usuario_id) {
+				$user = User::find($tUsers->usuario_id);
+				array_push($users, $user);
+			}
 		}
 
 		return response()->json($users, 200);
