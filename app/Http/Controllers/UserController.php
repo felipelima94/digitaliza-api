@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\User;
 use App\Http\Resources\User as UserResource;
+use Illuminate\Support\Facades\Input;
 
 class UserController extends Controller
 {
@@ -101,17 +102,27 @@ class UserController extends Controller
 	 */
 	public function update(Request $request, $id)
 	{
+		$input = Input::all();
 		// atualizar os dados do usuario
 		$user = User::find($id);
-		$user->first_name 	  = $request->input('first_name');
-		$user->last_name  	  = $request->input('last_name');
-		$user->user_name  	  = $request->input('user_name');
-		$user->password   	  = bcrypt($request->input('password'));
-		$user->pic     	  	  = $request->input('pic');
-		$user->master     	  = $request->input('master');
-		$user->status     	  = $request->input('status');
-		$user->remember_token = str_random(10);
+		$user->first_name 	  = $input['first_name'];
+		$user->last_name  	  = $input['last_name'];
+		$user->user_name  	  = $input['user_name'];
+		$picName = str_random(40);
+		
+		if(Input::hasFile('pic')){
+			$pic = $input['pic'];
+			$pic->move("/var/www/html/digitaliza-api/public/img/profile_pic/", $picName.".".$pic->getClientOriginalExtension());
+			if($user->pic != '/img/profile_pic/picProfile.png')
+			unlink("/var/www/html/digitaliza-api/public".$user->pic);
+			$user->pic = "/img/profile_pic/".$picName.".".$pic->getClientOriginalExtension();
+		}
 
+		if((Input::get('password') && Input::get('c_password'))
+			&& (strlen($input['password']) >= 8 && strlen($input['c_password']) >= 8)
+			&& ($input['password'] == $input['c_password'])) {
+			$user->password = bcrypt($request->input('password'));
+		}
 		if($user->save()) {
 			return new UserResource($user);
 		}
