@@ -112,7 +112,7 @@ Route::post('/user', array('middleware' => 'cors', 'uses' => 'UserController@sto
 
 // update user existent
 // Route::put('/user/{id}', "UserController@update");
-Route::put('/user/{id}', array('middleware' => 'cors', 'uses' => 'UserController@update'));
+Route::post('/user/{id}', array('middleware' => 'cors', 'uses' => 'UserController@update'));
 
 // delete user
 // Route::delete('/user/{id}/', "UserController@destroy");
