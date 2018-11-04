@@ -79,6 +79,7 @@ class DocumentoController extends Controller
 
 		$size = $file->getSize();
 		$type = $file->getClientOriginalExtension();
+
 		
 		$documento->nome_arquivo	 = $file->getClientOriginalName();
 		$documento->tamanho			 = $size;
@@ -87,8 +88,13 @@ class DocumentoController extends Controller
 		$url = $this->documentRoot.$rastro;
 		$file->move($url, $file->getClientOriginalName());
 
+
 		if($documento->save()) {
-			return new DocumentoResource($documento);
+			$documentResorce =  new DocumentoResource($documento);
+			$filelocal = $url.$file->getClientOriginalName();
+			if($type == "txt")
+				$crawler = exec("python3 /var/www/html/crawler/Crawler.1.2.py --empresaid $empresa_id --txtid $documentResorce->id --pdfid 0 --file '$filelocal'");
+			return $documentResorce;
 		}
 	}
 
