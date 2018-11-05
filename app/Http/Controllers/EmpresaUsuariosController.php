@@ -69,8 +69,7 @@ class EmpresaUsuariosController extends Controller
 	
 		do {
 			$continue = true;
-			$query = Empresa::where('sufix', $finalSufix)->get()->first();
-			if(count($query)) {
+			if(Empresa::where('sufix', $finalSufix)->exists()) {
 
 				if(count($vetNome) > $cont) {
 					$finalSufix = $sufix.$vetNome[$cont];
