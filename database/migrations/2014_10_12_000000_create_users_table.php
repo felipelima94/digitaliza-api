@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string("pic")->default("/img/profile_pic/picProfile.png");
             $table->boolean('master')->default(true);
             $table->boolean('status')->default(true);
+            $table->boolean('deleted')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -138,7 +138,11 @@ class UserController extends Controller
 	{
 		$user = User::findOrFail($id);
 
-		if($user->delete()) {
+		$user->deleted = true;
+		$user->status = false;
+		$user->user_name = str_random(40);
+
+		if($user->save()) {
 			return new UserResource($user);
 		}
 	}

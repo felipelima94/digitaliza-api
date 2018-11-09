@@ -32,7 +32,7 @@ class EmpresaUsuariosController extends Controller
 	}
 
 	public function getUsersByEmpresa(Request $request, $empresa_id) {
-		$empresaUsuario = EmpresaUsuarios::where('empresa_id', $empresa_id)->get();
+		$empresaUsuario = EmpresaUsuarios::where('empresa_id', '=', $empresa_id, 'and', 'deleted', '=', 0)->get();
 
 		$users = [];
 		foreach($empresaUsuario as $tUsers) {
